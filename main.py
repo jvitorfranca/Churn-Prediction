@@ -9,7 +9,7 @@ import utilities as ut
 
 def main():
 
-    time = 60
+    time = 60*10
 
     file = pd.read_csv("WA_Fn-UseC_-Telco-Customer-Churn.csv")
 
@@ -24,23 +24,23 @@ def main():
                 initial_configurations_via_metalearning=0
                 )
 
+    # Choosing kappa as the metric
     kappas = asc_t.metrics.make_scorer('kappa', sk.metrics.cohen_kappa_score)
 
     dt.fit(X_train, Y_train, metric=kappas)
 
-
-    print("------------------------ \t cv_results_ \t -------------------------------")
+    # Getting the rank of models
     i = 0
     for key in dt.cv_results_.items():
         if i < 5:
-            print(key)
-            print("\n")
+            with open("log.txt", "a") as arch:
+                arch.write("{}\n\n".format(key))
         else:
             break
         i = i + 1
-    print("------------------------ \t end cv_results_ \t ---------------------------")
 
-    # scores.predict_and_save(dt, X_test, Y_test, verbose=True, file="RF.txt")
+    # Predicting the model
+    scores.predict_and_save(dt, X_test, Y_test, verbose=True, file="prediction.txt")
 
 if __name__ == "__main__":
     main()
