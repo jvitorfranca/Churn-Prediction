@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 import scores
 import utilities as ut
+import pickle
 
 
 def main():
@@ -21,14 +22,16 @@ def main():
                 time_left_for_this_task=time+10,
                 per_run_time_limit=time,
                 initial_configurations_via_metalearning=0,
-                # resampling_strategy='cv',
-                # resampling_strategy_arguments={'folds': 5},
+                resampling_strategy='cv',
+                resampling_strategy_arguments={'folds': 5},
                 )
 
     # Choosing kappa as the metric
     kappas = asc_t.metrics.make_scorer('kappa', sk.metrics.cohen_kappa_score)
 
     automl.fit(X_train, Y_train, metric=kappas)
+
+    automl.refit(X_train, Y_train)
 
     # Getting the rank of models
     i = 0
