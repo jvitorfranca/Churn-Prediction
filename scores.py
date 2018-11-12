@@ -29,14 +29,22 @@ def predict_and_save(classifier, X_test, Y_test, verbose=False, file=None):
         with open(file, "a") as arch:
             arch.write("{:2f}\t{:2f}\t{:2f}\t{:2f}\t{:2f}\t{:2f}\t{:d}\t{:d}\t{:d}\t{:d}\n".format(acc,prec,sens,spec,fscore,kappa,tp,fn,fp,tn))
 
-def save_log(classifier, file):
+def save_log(classifier, file, type=None):
 
-    # Getting the rank of models
-    i = 0
-    for key in classifier.cv_results_.items():
-        if i < 5:
-            with open(file, "a") as arch:
-                arch.write("{}\n\n".format(key))
-        else:
-            break
-        i = i + 1
+    # Use cv_results_.items() to find all classificators the model tested
+    # May also use classifier.show_models() to find the best model itself
+
+    if type != None:
+        # Getting the rank of models
+        i = 0
+        for key in classifier.cv_results_.items():
+            if i < 5:
+                with open(file, "a") as arch:
+                    arch.write("{}\n\n".format(key))
+            else:
+                break
+            i = i + 1
+    else:
+        # Getting the best
+        with open(file, "a") as arch:
+            arch.write("{}\n\n".format(classifier.show_models()))
